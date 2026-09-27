@@ -21,7 +21,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 2. Adaptive CSS Architecture (Dynamic Light & Dark Support with Fluid Animations)
+# 2. White-Label Stealth CSS (Hides GitHub, Fork, Menus & Watermarks)
 st.markdown("""
 <head>
     <meta name="mobile-web-app-capable" content="yes">
@@ -33,6 +33,31 @@ st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
     
+    /* ========================================================
+       STEALTH WHITE-LABEL OVERRIDES (Hides GitHub & Fork Badges)
+       ======================================================== */
+    #MainMenu {visibility: hidden !important; display: none !important;}
+    header {visibility: hidden !important; display: none !important;}
+    footer {visibility: hidden !important; display: none !important;}
+    [data-testid="stToolbar"] {visibility: hidden !important; display: none !important;}
+    [data-testid="stDecoration"] {visibility: hidden !important; display: none !important;}
+    [data-testid="stStatusWidget"] {visibility: hidden !important; display: none !important;}
+    .stDeployButton {display: none !important;}
+    [data-testid="stAppDeployButton"] {display: none !important;}
+    
+    /* Remove Streamlit Cloud Bottom/Top Fork and GitHub Links */
+    div[class^="viewerBadge"] {display: none !important;}
+    div[class*="viewerBadge"] {display: none !important;}
+    div[class^="styles_viewerBadge"] {display: none !important;}
+    div[class*="styles_viewerBadge"] {display: none !important;}
+    a[href*="github.com"] {display: none !important;}
+
+    /* Tighten top space caused by removing header */
+    .block-container {
+        padding-top: 1.8rem !important;
+        padding-bottom: 2rem !important;
+    }
+
     /* Dynamic Theme Variables */
     :root {
         --bg-card: rgba(255, 255, 255, 0.85);
@@ -253,7 +278,7 @@ with st.sidebar:
     st.caption("• **Mineralization Window:** 100% Soil Loss ≤ 16 Days")
     
     st.divider()
-    with st.expander(" Mobile / Desktop App Install"):
+    with st.expander("Mobile / Desktop App Install"):
         st.markdown("""
         * **Android:** Tap `⋮` > **'Install App'**
         * **iOS:** Tap `⬆` > **'Add to Home Screen'**
