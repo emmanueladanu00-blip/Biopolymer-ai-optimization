@@ -21,60 +21,14 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 2. White-Label Stealth CSS (Hides GitHub, Fork, Menus & Watermarks)
-st.markdown("""
-<head>
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="theme-color" content="#10B981">
-</head>
+# 2. Sidebar Theme Switcher Control
+with st.sidebar:
+    st.markdown('<div style="font-family: monospace; font-size: 0.75rem; color: #0284C7; letter-spacing: 0.1em; text-transform: uppercase;">INTERFACE CONTROLS</div>', unsafe_allow_html=True)
+    theme_choice = st.selectbox("Display Theme", ["System Default", "Dark Mode", "Light Mode"], index=0)
 
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
-    
-    /* ========================================================
-       STEALTH WHITE-LABEL OVERRIDES (Hides GitHub & Fork Badges)
-       ======================================================== */
-    #MainMenu {visibility: hidden !important; display: none !important;}
-    header {visibility: hidden !important; display: none !important;}
-    footer {visibility: hidden !important; display: none !important;}
-    [data-testid="stToolbar"] {visibility: hidden !important; display: none !important;}
-    [data-testid="stDecoration"] {visibility: hidden !important; display: none !important;}
-    [data-testid="stStatusWidget"] {visibility: hidden !important; display: none !important;}
-    .stDeployButton {display: none !important;}
-    [data-testid="stAppDeployButton"] {display: none !important;}
-    
-    /* Remove Streamlit Cloud Bottom/Top Fork and GitHub Links */
-    div[class^="viewerBadge"] {display: none !important;}
-    div[class*="viewerBadge"] {display: none !important;}
-    div[class^="styles_viewerBadge"] {display: none !important;}
-    div[class*="styles_viewerBadge"] {display: none !important;}
-    a[href*="github.com"] {display: none !important;}
-
-    /* Tighten top space caused by removing header */
-    .block-container {
-        padding-top: 1.8rem !important;
-        padding-bottom: 2rem !important;
-    }
-
-    /* Dynamic Theme Variables */
-    :root {
-        --bg-card: rgba(255, 255, 255, 0.85);
-        --border-card: rgba(226, 232, 240, 0.9);
-        --border-card-hover: rgba(16, 185, 129, 0.4);
-        --text-primary: #0F172A;
-        --text-secondary: #475569;
-        --text-muted: #64748B;
-        --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
-        --card-shadow-hover: 0 12px 30px -4px rgba(16, 185, 129, 0.15);
-        --hero-bg: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(6, 182, 212, 0.04) 100%), rgba(255, 255, 255, 0.95);
-        --tag-color: #0284C7;
-        --tab-bg: rgba(241, 245, 249, 0.8);
-        --tab-selected: #FFFFFF;
-    }
-
-    @media (prefers-color-scheme: dark) {
+# 3. Dynamic Theme Injection Logic
+if theme_choice == "Dark Mode":
+    theme_css = """
         :root {
             --bg-card: rgba(17, 24, 39, 0.75);
             --border-card: rgba(255, 255, 255, 0.08);
@@ -89,30 +43,119 @@ st.markdown("""
             --tab-bg: rgba(17, 24, 39, 0.6);
             --tab-selected: rgba(255, 255, 255, 0.1);
         }
-    }
+        .stApp { background-color: #030712 !important; color: #F8FAFC !important; }
+    """
+elif theme_choice == "Light Mode":
+    theme_css = """
+        :root {
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --border-card: rgba(226, 232, 240, 0.9);
+            --border-card-hover: rgba(16, 185, 129, 0.4);
+            --text-primary: #0F172A;
+            --text-secondary: #475569;
+            --text-muted: #64748B;
+            --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+            --card-shadow-hover: 0 12px 30px -4px rgba(16, 185, 129, 0.15);
+            --hero-bg: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(6, 182, 212, 0.04) 100%), rgba(255, 255, 255, 0.95);
+            --tag-color: #0284C7;
+            --tab-bg: rgba(241, 245, 249, 0.8);
+            --tab-selected: #FFFFFF;
+        }
+        .stApp { background-color: #F8FAFC !important; color: #0F172A !important; }
+    """
+else:
+    # System Default (Auto-detects browser / OS settings)
+    theme_css = """
+        :root {
+            --bg-card: rgba(255, 255, 255, 0.85);
+            --border-card: rgba(226, 232, 240, 0.9);
+            --border-card-hover: rgba(16, 185, 129, 0.4);
+            --text-primary: #0F172A;
+            --text-secondary: #475569;
+            --text-muted: #64748B;
+            --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+            --card-shadow-hover: 0 12px 30px -4px rgba(16, 185, 129, 0.15);
+            --hero-bg: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(6, 182, 212, 0.04) 100%), rgba(255, 255, 255, 0.95);
+            --tag-color: #0284C7;
+            --tab-bg: rgba(241, 245, 249, 0.8);
+            --tab-selected: #FFFFFF;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-card: rgba(17, 24, 39, 0.75);
+                --border-card: rgba(255, 255, 255, 0.08);
+                --border-card-hover: rgba(16, 185, 129, 0.5);
+                --text-primary: #F8FAFC;
+                --text-secondary: #CBD5E1;
+                --text-muted: #94A3B8;
+                --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+                --card-shadow-hover: 0 12px 40px -10px rgba(6, 182, 212, 0.25);
+                --hero-bg: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(6, 182, 212, 0.04) 100%), rgba(17, 24, 39, 0.85);
+                --tag-color: #38BDF8;
+                --tab-bg: rgba(17, 24, 39, 0.6);
+                --tab-selected: rgba(255, 255, 255, 0.1);
+            }
+            .stApp { background-color: #030712 !important; color: #F8FAFC !important; }
+        }
+    """
 
-    html, body, [class*="css"] {
+# 4. White-Label Stealth CSS
+st.markdown(f"""
+<head>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#10B981">
+</head>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+    
+    /* STEALTH WHITE-LABEL OVERRIDES (Permanently Hides GitHub & Fork Badges) */
+    #MainMenu {{visibility: hidden !important; display: none !important;}}
+    header {{visibility: hidden !important; display: none !important;}}
+    footer {{visibility: hidden !important; display: none !important;}}
+    [data-testid="stToolbar"] {{visibility: hidden !important; display: none !important;}}
+    [data-testid="stDecoration"] {{visibility: hidden !important; display: none !important;}}
+    [data-testid="stStatusWidget"] {{visibility: hidden !important; display: none !important;}}
+    .stDeployButton {{display: none !important;}}
+    [data-testid="stAppDeployButton"] {{display: none !important;}}
+    
+    div[class^="viewerBadge"] {{display: none !important;}}
+    div[class*="viewerBadge"] {{display: none !important;}}
+    div[class^="styles_viewerBadge"] {{display: none !important;}}
+    div[class*="styles_viewerBadge"] {{display: none !important;}}
+    a[href*="github.com"] {{display: none !important;}}
+
+    .block-container {{
+        padding-top: 1.8rem !important;
+        padding-bottom: 2rem !important;
+    }}
+
+    {theme_css}
+
+    html, body, [class*="css"] {{
         font-family: 'Inter', sans-serif;
-    }
+    }}
 
-    @keyframes fadeInUp {
-        0% { opacity: 0; transform: translateY(12px); }
-        100% { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeInUp {{
+        0% {{ opacity: 0; transform: translateY(12px); }}
+        100% {{ opacity: 1; transform: translateY(0); }}
+    }}
     
-    @keyframes pulseBeacon {
-        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-        70% { transform: scale(1.05); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
-        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-    }
+    @keyframes pulseBeacon {{
+        0% {{ transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }}
+        70% {{ transform: scale(1.05); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }}
+        100% {{ transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }}
+    }}
     
-    @keyframes pulseFail {
-        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-        70% { transform: scale(1.05); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
-        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-    }
+    @keyframes pulseFail {{
+        0% {{ transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }}
+        70% {{ transform: scale(1.05); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }}
+        100% {{ transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }}
+    }}
 
-    .glass-card {
+    .glass-card {{
         background: var(--bg-card);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
@@ -123,21 +166,21 @@ st.markdown("""
         box-shadow: var(--card-shadow);
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         animation: fadeInUp 0.5s ease-out;
-    }
+    }}
     
-    .glass-card:hover {
+    .glass-card:hover {{
         transform: translateY(-3px);
         border-color: var(--border-card-hover);
         box-shadow: var(--card-shadow-hover);
-    }
+    }}
 
-    .hero-card {
+    .hero-card {{
         background: var(--hero-bg);
         border: 1px solid rgba(16, 185, 129, 0.4);
         animation: fadeInUp 0.5s ease-out;
-    }
+    }}
 
-    .metric-title {
+    .metric-title {{
         font-family: 'Space Grotesk', sans-serif;
         font-size: 0.78rem;
         font-weight: 600;
@@ -145,24 +188,24 @@ st.markdown("""
         letter-spacing: 0.1em;
         color: var(--text-muted);
         margin-bottom: 4px;
-    }
+    }}
     
-    .metric-num {
+    .metric-num {{
         font-family: 'Space Grotesk', sans-serif;
         font-size: 2.1rem;
         font-weight: 700;
         color: var(--text-primary);
         letter-spacing: -0.03em;
-    }
+    }}
 
-    .metric-sub {
+    .metric-sub {{
         font-family: 'JetBrains Mono', monospace;
         font-size: 0.8rem;
         color: var(--text-muted);
         margin-top: 4px;
-    }
+    }}
 
-    .status-badge {
+    .status-badge {{
         display: inline-flex;
         align-items: center;
         gap: 8px;
@@ -172,79 +215,79 @@ st.markdown("""
         font-weight: 600;
         letter-spacing: 0.03em;
         margin-top: 8px;
-    }
+    }}
     
-    .status-pass {
+    .status-pass {{
         background: rgba(16, 185, 129, 0.12);
         color: #059669;
         border: 1px solid rgba(16, 185, 129, 0.3);
-    }
+    }}
     
-    .status-fail {
+    .status-fail {{
         background: rgba(239, 68, 68, 0.12);
         color: #DC2626;
         border: 1px solid rgba(239, 68, 68, 0.3);
-    }
+    }}
 
-    .beacon-dot {
+    .beacon-dot {{
         width: 8px;
         height: 8px;
         border-radius: 50%;
-    }
-    .beacon-pass {
+    }}
+    .beacon-pass {{
         background-color: #10B981;
         animation: pulseBeacon 2s infinite;
-    }
-    .beacon-fail {
+    }}
+    .beacon-fail {{
         background-color: #EF4444;
         animation: pulseFail 2s infinite;
-    }
+    }}
 
-    .brand-tag {
+    .brand-tag {{
         font-family: 'JetBrains Mono', monospace;
         font-size: 0.75rem;
         color: var(--tag-color);
         letter-spacing: 0.15em;
         text-transform: uppercase;
         margin-bottom: 4px;
-    }
-    .brand-title {
+    }}
+    .brand-title {{
         font-family: 'Space Grotesk', sans-serif;
         font-size: 1.85rem;
         font-weight: 700;
         color: var(--text-primary);
         letter-spacing: -0.03em;
-    }
-    .brand-desc {
+    }}
+    .brand-desc {{
         color: var(--text-secondary);
         font-size: 0.95rem;
         margin-bottom: 22px;
-    }
+    }}
 
-    .stTabs [data-baseweb="tab-list"] {
+    .stTabs [data-baseweb="tab-list"] {{
         gap: 8px;
         background-color: var(--tab-bg);
         border-radius: 10px;
         padding: 6px;
         border: 1px solid var(--border-card);
-    }
-    .stTabs [data-baseweb="tab"] {
+    }}
+    .stTabs [data-baseweb="tab"] {{
         border-radius: 8px;
         color: var(--text-secondary);
         font-weight: 500;
         padding: 8px 18px;
         transition: all 0.2s ease;
-    }
-    .stTabs [aria-selected="true"] {
+    }}
+    .stTabs [aria-selected="true"] {{
         background-color: var(--tab-selected) !important;
         color: var(--text-primary) !important;
         font-weight: 600;
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
+    }}
 </style>
 """, unsafe_allow_html=True)
 
-# 3. Load Model Assets
+# 5. Load Model Assets
 @st.cache_resource
 def load_assets():
     model = tf.keras.models.load_model('models/ann_model.keras')
@@ -254,8 +297,9 @@ def load_assets():
 
 model, scaler_X, scaler_y = load_assets()
 
-# --- SIDEBAR ---
+# --- SIDEBAR CONTENT ---
 with st.sidebar:
+    st.divider()
     st.markdown('<div class="brand-tag">RESEARCH SPECIFICATION</div>', unsafe_allow_html=True)
     st.markdown("### JOSTUM Materials Lab")
     st.markdown("""
@@ -326,7 +370,6 @@ with tabs[0]:
     with col_metric:
         st.markdown("#### Real-Time Neural Simulation")
         
-        # Inference
         features = np.array([[cs, ce, lg, gly, glut]])
         features_scaled = scaler_X.transform(features)
         preds_scaled = model(features_scaled, training=False).numpy()
