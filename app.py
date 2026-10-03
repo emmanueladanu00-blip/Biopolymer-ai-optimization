@@ -20,114 +20,123 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 2. Main Page Top Bar: Title & Permanent Theme Switcher (Never Hidden)
-col_header, col_theme = st.columns([3.5, 1])
-
-with col_header:
-    st.title("Biopolymer Packaging Optimization")
-    st.caption("AI-guided formulation of biodegradable cement bags from rice husk and chitosan waste.")
-
-with col_theme:
-    st.write("") # Spacing
-    theme_choice = st.radio(
-        "Theme",
-        ["Light", "Dark"],
-        horizontal=True,
-        label_visibility="collapsed"
-    )
-
-# 3. Dynamic Theme Styles
-if theme_choice == "Dark":
-    card_bg = "#111827"
-    border_color = "#1F2937"
-    text_main = "#F9FAFB"
-    text_sub = "#9CA3AF"
-    body_bg = "#0B0F17"
-    plotly_template = "plotly_dark"
-else:
-    card_bg = "#FFFFFF"
-    border_color = "#E5E7EB"
-    text_main = "#111827"
-    text_sub = "#4B5563"
-    body_bg = "#F9FAFB"
-    plotly_template = "plotly_white"
-
-# 4. Clean, Human CSS (Hides GitHub/Fork while keeping UI clean)
-st.markdown(f"""
+# 2. Responsive Mobile CSS (Restores Sidebar Button, Kills GitHub & Fork)
+st.markdown("""
 <style>
-    /* Hide GitHub, Fork badges, and Streamlit headers */
-    #MainMenu {{visibility: hidden !important; display: none !important;}}
-    header {{visibility: hidden !important; display: none !important;}}
-    footer {{visibility: hidden !important; display: none !important;}}
-    [data-testid="stToolbar"] {{visibility: hidden !important; display: none !important;}}
-    [data-testid="stDecoration"] {{visibility: hidden !important; display: none !important;}}
-    [data-testid="stStatusWidget"] {{visibility: hidden !important; display: none !important;}}
-    .stDeployButton {{display: none !important;}}
-    div[class^="viewerBadge"] {{display: none !important;}}
-    a[href*="github.com"] {{display: none !important;}}
+    /* =========================================================
+       1. RESTORE SIDEBAR BUTTON, HIDE GITHUB / FORK / TOOLBAR
+       ========================================================= */
+    /* Keep the header area invisible but allow the sidebar arrow to show */
+    header[data-testid="stHeader"] {
+        background: transparent !important;
+    }
+    
+    /* Ensure the sidebar toggle button is ALWAYS visible and clickable */
+    [data-testid="collapsedControl"],
+    [data-testid="stSidebarCollapseButton"] {
+        visibility: visible !important;
+        display: flex !important;
+        z-index: 1000001 !important;
+    }
 
-    .stApp {{
-        background-color: {body_bg} !important;
-        color: {text_main} !important;
-    }}
+    /* Destroy GitHub, Fork, Deploy, and 3-dots menus */
+    [data-testid="stToolbar"] {visibility: hidden !important; display: none !important;}
+    [data-testid="stDecoration"] {visibility: hidden !important; display: none !important;}
+    [data-testid="stStatusWidget"] {visibility: hidden !important; display: none !important;}
+    #MainMenu {visibility: hidden !important; display: none !important;}
+    .stDeployButton {display: none !important;}
 
-    .block-container {{
-        padding-top: 1.5rem !important;
+    /* Destroy "Created by" and bottom GitHub badges */
+    footer {visibility: hidden !important; display: none !important;}
+    [data-testid="stFooter"] {visibility: hidden !important; display: none !important;}
+    div[class*="viewerBadge"] {visibility: hidden !important; display: none !important;}
+    div[class*="ProfileBadge"] {visibility: hidden !important; display: none !important;}
+    div[class*="StatusWidget"] {visibility: hidden !important; display: none !important;}
+    div[class*="manage-app"] {visibility: hidden !important; display: none !important;}
+    a[href*="github.com"] {display: none !important;}
+
+    /* =========================================================
+       2. MOBILE-FIRST RESPONSIVE CARDS & TYPOGRAPHY
+       ========================================================= */
+    .block-container {
+        padding-top: 1rem !important;
         padding-bottom: 2rem !important;
-    }}
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
 
-    /* Human, Minimalist Cards */
-    .metric-card {{
-        background-color: {card_bg};
-        border: 1px solid {border_color};
+    .clean-card {
+        background-color: var(--secondary-background-color);
+        border: 1px solid rgba(128, 128, 128, 0.2);
         border-radius: 8px;
-        padding: 16px 18px;
-        margin-bottom: 12px;
-    }}
-    .metric-label {{
+        padding: 14px 16px;
+        margin-bottom: 10px;
+    }
+    
+    .card-label {
         font-size: 0.8rem;
         font-weight: 500;
-        color: {text_sub};
-        margin-bottom: 4px;
-    }}
-    .metric-value {{
-        font-size: 1.6rem;
-        font-weight: 600;
-        color: {text_main};
-    }}
-    .metric-desc {{
-        font-size: 0.78rem;
-        color: {text_sub};
+        opacity: 0.75;
+        margin-bottom: 2px;
+        color: var(--text-color);
+    }
+    
+    .card-value {
+        font-size: 1.55rem;
+        font-weight: 700;
+        color: var(--text-color);
+    }
+    
+    .card-hint {
+        font-size: 0.75rem;
+        opacity: 0.6;
         margin-top: 2px;
-    }}
+        color: var(--text-color);
+    }
 
     /* Status Badges */
-    .badge-pass {{
+    .badge-pass {
         display: inline-block;
         background-color: #DEF7EC;
         color: #03543F;
         border: 1px solid #BCF0DA;
         border-radius: 4px;
-        padding: 4px 8px;
-        font-size: 0.78rem;
+        padding: 3px 8px;
+        font-size: 0.75rem;
         font-weight: 600;
         margin-top: 6px;
-    }}
-    .badge-fail {{
+    }
+    .badge-fail {
         display: inline-block;
         background-color: #FDE8E8;
         color: #9B1C1C;
         border: 1px solid #FBD5D5;
         border-radius: 4px;
-        padding: 4px 8px;
-        font-size: 0.78rem;
+        padding: 3px 8px;
+        font-size: 0.75rem;
         font-weight: 600;
         margin-top: 6px;
-    }}
+    }
+
+    /* Mobile screen adjustments (max-width 768px) */
+    @media (max-width: 768px) {
+        .card-value {
+            font-size: 1.35rem !important;
+        }
+        .clean-card {
+            padding: 12px 14px !important;
+        }
+        h1 {
+            font-size: 1.6rem !important;
+        }
+        h2, h3 {
+            font-size: 1.2rem !important;
+        }
+    }
 </style>
 """, unsafe_allow_html=True)
 
-# 5. Load Trained Model
+# 3. Load Trained Model
 @st.cache_resource
 def load_assets():
     model = tf.keras.models.load_model('models/ann_model.keras')
@@ -137,9 +146,9 @@ def load_assets():
 
 model, scaler_X, scaler_y = load_assets()
 
-# --- SIDEBAR (Clean Academic Details) ---
+# --- SIDEBAR (The Left-Hand Dashboard) ---
 with st.sidebar:
-    st.markdown("### Research Details")
+    st.markdown("### Research Project")
     st.markdown("""
     **Title:**  
     AI-Optimised Lignin-Cellulose-Chitosan Biodegradable Bags for Cement Packaging
@@ -151,17 +160,20 @@ with st.sidebar:
     Joseph Sarwuan Tarka University, Makurdi (JOSTUM)
     """)
     st.divider()
-    st.markdown("### Packaging Target Standards")
+    st.markdown("### Target Standards")
     st.markdown("""
     * **Tensile Strength:** ≥ 25.0 MPa (ASTM D882)
-    * **Water Absorption:** As low as possible
+    * **Water Absorption:** Minimize (< 100%)
     * **Biodegradation:** 100% loss ≤ 16 days
     """)
     st.divider()
-    with st.expander("Install on Phone / Laptop"):
+    with st.expander("Install App on Mobile / PC"):
         st.caption("• **Android / PC:** Browser Menu > 'Install App'\n• **iPhone:** Share Button > 'Add to Home Screen'")
 
-# --- MAIN TABS ---
+# --- MAIN PAGE HEADER ---
+st.title("Biopolymer Packaging Optimization")
+st.caption("Decision-support system for high-strength biodegradable agricultural-waste cement packaging.")
+
 tabs = st.tabs(["Formulation Simulator", "Optimal Recipes (Pareto)", "Model Performance"])
 
 # ==========================================
@@ -204,12 +216,12 @@ with tabs[0]:
 
         meets_spec = tensile >= 25.0
 
-        # Primary Metric
+        # Primary Metric Card
         badge_html = '<div class="badge-pass">Meets cement packaging standard (≥ 25.0 MPa)</div>' if meets_spec else '<div class="badge-fail">Below required tensile standard (< 25.0 MPa)</div>'
         st.markdown(f"""
-        <div class="metric-card">
-            <div class="metric-label">Tensile Strength (ASTM D882)</div>
-            <div class="metric-value">{tensile} MPa</div>
+        <div class="clean-card">
+            <div class="card-label">Tensile Strength (ASTM D882)</div>
+            <div class="card-value">{tensile} MPa</div>
             {badge_html}
         </div>
         """, unsafe_allow_html=True)
@@ -217,29 +229,29 @@ with tabs[0]:
         m_col1, m_col2 = st.columns(2)
         with m_col1:
             st.markdown(f"""
-            <div class="metric-card">
-                <div class="metric-label">Elongation at Break</div>
-                <div class="metric-value">{elongation}%</div>
-                <div class="metric-desc">Material flexibility</div>
+            <div class="clean-card">
+                <div class="card-label">Elongation at Break</div>
+                <div class="card-value">{elongation}%</div>
+                <div class="card-hint">Material flexibility</div>
             </div>
-            <div class="metric-card">
-                <div class="metric-label">Soil Biodegradation</div>
-                <div class="metric-value">{degrad} Days</div>
-                <div class="metric-desc">Time to complete mass loss</div>
+            <div class="clean-card">
+                <div class="card-label">Soil Biodegradation</div>
+                <div class="card-value">{degrad} Days</div>
+                <div class="card-hint">Time to complete mass loss</div>
             </div>
             """, unsafe_allow_html=True)
 
         with m_col2:
             st.markdown(f"""
-            <div class="metric-card">
-                <div class="metric-label">Water Absorption (1 Hour)</div>
-                <div class="metric-value">{water_abs}%</div>
-                <div class="metric-desc">Lower indicates better barrier</div>
+            <div class="clean-card">
+                <div class="card-label">Water Absorption (1 Hour)</div>
+                <div class="card-value">{water_abs}%</div>
+                <div class="card-hint">Lower indicates better barrier</div>
             </div>
-            <div class="metric-card">
-                <div class="metric-label">Estimated Production Cost</div>
-                <div class="metric-value">${cost} / kg</div>
-                <div class="metric-desc">Raw material feedstock cost</div>
+            <div class="clean-card">
+                <div class="card-label">Estimated Production Cost</div>
+                <div class="card-value">${cost} / kg</div>
+                <div class="card-hint">Raw material feedstock cost</div>
             </div>
             """, unsafe_allow_html=True)
 
@@ -278,11 +290,10 @@ with tabs[1]:
                     "Cost_per_kg_USD": "Material Cost ($/kg)",
                     "Tensile_Strength_MPa": "Tensile Strength (MPa)",
                     "Water_Absorption_%": "Water Absorption (%)"
-                },
-                template=plotly_template
+                }
             )
             fig.add_hline(y=25.0, line_dash="dash", line_color="#10B981", annotation_text="Standard Benchmark (25.0 MPa)")
-            fig.update_layout(margin=dict(l=10, r=10, t=25, b=10), height=400)
+            fig.update_layout(margin=dict(l=10, r=10, t=25, b=10), height=380)
             st.plotly_chart(fig, width="stretch")
 
         st.markdown("#### Top Recommended Formulations")
