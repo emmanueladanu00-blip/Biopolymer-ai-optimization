@@ -20,89 +20,205 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 2. Native Adaptive CSS (Allows 3-Dots Theme Switcher to Work 100% Natively)
-st.markdown("""
+# 2. Top Header: Title on Left, Permanent Visible Theme Switcher on Right
+top_col1, top_col2 = st.columns([3.5, 1.2])
+
+with top_col1:
+    st.title("Biopolymer Packaging Optimization")
+    st.caption("AI-guided formulation of biodegradable cement bags from rice husk and chitosan waste.")
+
+with top_col2:
+    st.write("") # Vertical alignment
+    theme_choice = st.radio(
+        "Theme Switcher",
+        ["Light Mode", "Dark Mode"],
+        horizontal=True,
+        label_visibility="collapsed"
+    )
+
+# 3. Synchronized Color Palette
+if theme_choice == "Dark Mode":
+    app_bg = "#0B1120"           # Main page background
+    sidebar_bg = "#070C18"       # Sidebar deep slate background
+    header_bg = "#0B1120"        # Top bar background
+    card_bg = "#1E293B"          # Cards background
+    border_col = "#334155"       # Crisp visible border
+    text_primary = "#FFFFFF"     # Pure white for headings & values
+    text_secondary = "#E2E8F0"   # Bright silver for labels & text
+    caption_col = "#94A3B8"      # Subtitles
+    badge_pass_bg = "#064E3B"
+    badge_pass_text = "#6EE7B7"
+    badge_pass_border = "#059669"
+    badge_fail_bg = "#7F1D1D"
+    badge_fail_text = "#FCA5A5"
+    badge_fail_border = "#DC2626"
+    plotly_theme = "plotly_dark"
+else:
+    app_bg = "#F8FAFC"
+    sidebar_bg = "#FFFFFF"
+    header_bg = "#F8FAFC"
+    card_bg = "#FFFFFF"
+    border_col = "#E2E8F0"
+    text_primary = "#0F172A"
+    text_secondary = "#334155"
+    caption_col = "#64748B"
+    badge_pass_bg = "#DEF7EC"
+    badge_pass_text = "#03543F"
+    badge_pass_border = "#BCF0DA"
+    badge_fail_bg = "#FDE8E8"
+    badge_fail_text = "#9B1C1C"
+    badge_fail_border = "#FBD5D5"
+    plotly_theme = "plotly_white"
+
+# 4. Synchronized Global CSS (Controls Main Page, Sidebar, & Header Together)
+st.markdown(f"""
 <style>
     /* 1. Block GitHub links, Fork badges, and Deploy buttons ONLY */
-    .stDeployButton {display: none !important;}
-    [data-testid="stAppDeployButton"] {display: none !important;}
-    div[class*="viewerBadge"] {display: none !important;}
-    div[class*="ProfileBadge"] {display: none !important;}
-    a[href*="github.com"] {display: none !important;}
-    footer {display: none !important;}
+    .stDeployButton {{display: none !important;}}
+    [data-testid="stAppDeployButton"] {{display: none !important;}}
+    div[class*="viewerBadge"] {{display: none !important;}}
+    div[class*="ProfileBadge"] {{display: none !important;}}
+    a[href*="github.com"] {{display: none !important;}}
+    footer {{display: none !important;}}
 
-    /* 2. Top spacing */
-    .block-container {
-        padding-top: 2rem !important;
-        padding-bottom: 2rem !important;
-    }
+    /* 2. Main Page Background & Text */
+    .stApp {{
+        background-color: {app_bg} !important;
+        color: {text_primary} !important;
+    }}
 
-    /* 3. Cards that natively adapt to Streamlit's Light & Dark themes */
-    .clean-card {
-        background-color: var(--secondary-background-color);
-        border: 1px solid rgba(128, 128, 128, 0.25);
+    /* 3. Top Header Area */
+    header[data-testid="stHeader"] {{
+        background-color: {header_bg} !important;
+    }}
+
+    /* 4. Left Sidebar (Entire Dashboard Container) */
+    section[data-testid="stSidebar"] {{
+        background-color: {sidebar_bg} !important;
+        border-right: 1px solid {border_col} !important;
+    }}
+    section[data-testid="stSidebar"] * {{
+        color: {text_secondary} !important;
+    }}
+    section[data-testid="stSidebar"] h1, 
+    section[data-testid="stSidebar"] h2, 
+    section[data-testid="stSidebar"] h3 {{
+        color: {text_primary} !important;
+        font-weight: 700 !important;
+    }}
+    section[data-testid="stSidebar"] hr {{
+        border-color: {border_col} !important;
+    }}
+    section[data-testid="stSidebar"] [data-testid="stExpander"] {{
+        background-color: {card_bg} !important;
+        border: 1px solid {border_col} !important;
+    }}
+
+    /* 5. Headings and Body Text */
+    h1, h2, h3, h4, h5, h6 {{
+        color: {text_primary} !important;
+        font-weight: 600 !important;
+    }}
+    p, span, label {{
+        color: {text_secondary} !important;
+    }}
+    .stCaption, [data-testid="stCaptionContainer"] p {{
+        color: {caption_col} !important;
+    }}
+
+    /* 6. Slider Labels & Radio Switcher Labels */
+    div[data-testid="stWidgetLabel"] label,
+    div[data-testid="stWidgetLabel"] p,
+    div[data-testid="stRadio"] label,
+    div[data-testid="stRadio"] p {{
+        color: {text_primary} !important;
+        font-size: 0.92rem !important;
+        font-weight: 500 !important;
+    }}
+
+    /* 7. Tabs Styling */
+    [data-baseweb="tab"] {{
+        color: {text_secondary} !important;
+        font-weight: 500 !important;
+    }}
+    [data-baseweb="tab"][aria-selected="true"] {{
+        color: {text_primary} !important;
+        font-weight: 700 !important;
+    }}
+
+    /* 8. Minimalist High-Contrast Cards */
+    .clean-card {{
+        background-color: {card_bg};
+        border: 1px solid {border_col};
         border-radius: 8px;
         padding: 18px 20px;
         margin-bottom: 12px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    }
-    
-    .card-label {
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }}
+    .card-label {{
         font-size: 0.82rem;
         font-weight: 600;
-        opacity: 0.8;
+        color: {text_secondary};
         text-transform: uppercase;
         letter-spacing: 0.05em;
-        margin-bottom: 4px;
-        color: var(--text-color);
-    }
-    
-    .card-value {
+        margin-bottom: 6px;
+    }}
+    .card-value {{
         font-size: 1.85rem;
         font-weight: 700;
-        color: var(--text-color);
-    }
-    
-    .card-hint {
+        color: {text_primary};
+    }}
+    .card-hint {{
         font-size: 0.8rem;
-        opacity: 0.65;
+        color: {caption_col};
         margin-top: 4px;
-        color: var(--text-color);
-    }
+    }}
 
-    /* 4. Adaptive Compliance Badges */
-    .badge-pass {
+    /* 9. Compliance Badges */
+    .badge-pass {{
         display: inline-block;
-        background-color: rgba(16, 185, 129, 0.2);
-        color: #10B981;
-        border: 1px solid rgba(16, 185, 129, 0.4);
+        background-color: {badge_pass_bg};
+        color: {badge_pass_text};
+        border: 1px solid {badge_pass_border};
         border-radius: 4px;
         padding: 4px 10px;
         font-size: 0.8rem;
         font-weight: 600;
         margin-top: 8px;
-    }
-    
-    .badge-fail {
+    }}
+    .badge-fail {{
         display: inline-block;
-        background-color: rgba(239, 68, 68, 0.2);
-        color: #EF4444;
-        border: 1px solid rgba(239, 68, 68, 0.4);
+        background-color: {badge_fail_bg};
+        color: {badge_fail_text};
+        border: 1px solid {badge_fail_border};
         border-radius: 4px;
         padding: 4px 10px;
         font-size: 0.8rem;
         font-weight: 600;
         margin-top: 8px;
-    }
+    }}
 
-    /* 5. Force Download Button text to stay readable */
-    .stDownloadButton button {
+    /* 10. Alert Boxes (st.info) */
+    div[data-testid="stAlert"] {{
+        background-color: {card_bg} !important;
+        border: 1px solid {border_col} !important;
+        color: {text_primary} !important;
+    }}
+    div[data-testid="stAlert"] p {{
+        color: {text_primary} !important;
+    }}
+
+    /* 11. Download Button: Solid Black Text on White Button */
+    .stDownloadButton button,
+    .stDownloadButton button p,
+    .stDownloadButton button span {{
+        color: #000000 !important;
         font-weight: 600 !important;
-    }
+    }}
 </style>
 """, unsafe_allow_html=True)
 
-# 3. Load Trained Model
+# 5. Load Trained Model
 @st.cache_resource
 def load_assets():
     model = tf.keras.models.load_model('models/ann_model.keras')
@@ -136,10 +252,7 @@ with st.sidebar:
     with st.expander("Install on Phone / Laptop"):
         st.caption("• **Android / PC:** Browser Menu > 'Install App'\n• **iPhone:** Share Button > 'Add to Home Screen'")
 
-# --- MAIN PAGE HEADER ---
-st.title("Biopolymer Packaging Optimization")
-st.caption("Decision-support system for high-strength biodegradable agricultural-waste cement packaging.")
-
+# --- MAIN PAGE TABS ---
 tabs = st.tabs(["Formulation Simulator", "Optimal Recipes (Pareto)", "Model Performance"])
 
 # ==========================================
@@ -255,15 +368,11 @@ with tabs[1]:
                     "Cost_per_kg_USD": "Material Cost ($/kg)",
                     "Tensile_Strength_MPa": "Tensile Strength (MPa)",
                     "Water_Absorption_%": "Water Absorption (%)"
-                }
+                },
+                template=plotly_theme
             )
             fig.add_hline(y=25.0, line_dash="dash", line_color="#10B981", annotation_text="Standard Benchmark (25.0 MPa)")
-            fig.update_layout(
-                plot_bgcolor="rgba(0,0,0,0)",
-                paper_bgcolor="rgba(0,0,0,0)",
-                margin=dict(l=10, r=10, t=25, b=10),
-                height=390
-            )
+            fig.update_layout(margin=dict(l=10, r=10, t=25, b=10), height=390)
             st.plotly_chart(fig, width="stretch")
 
         st.markdown("#### Top Recommended Formulations")
