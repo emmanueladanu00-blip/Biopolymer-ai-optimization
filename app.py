@@ -20,172 +20,89 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 2. Top Navigation Bar: Title on Left, Permanent Theme Switch on Right
-top_col1, top_col2 = st.columns([3.5, 1])
-
-with top_col1:
-    st.title("Biopolymer Packaging Optimization")
-    st.caption("AI-guided formulation of biodegradable cement bags from rice husk and chitosan waste.")
-
-with top_col2:
-    st.write("") # Spacing alignment
-    theme_choice = st.radio(
-        "Select Theme",
-        ["Light Mode", "Dark Mode"],
-        horizontal=True,
-        label_visibility="collapsed"
-    )
-
-# 3. High-Contrast Color Palette
-if theme_choice == "Dark Mode":
-    body_bg = "#0B1120"          # Deep rich slate
-    card_bg = "#1E293B"          # Crisp elevated card slate
-    border_col = "#334155"       # High-visibility border
-    text_primary = "#FFFFFF"     # Pure white for main text & values
-    text_secondary = "#E2E8F0"   # Bright silver for labels & descriptions
-    caption_col = "#94A3B8"      # Legible soft gray for subtitles
-    badge_pass_bg = "#064E3B"
-    badge_pass_text = "#6EE7B7"
-    badge_pass_border = "#059669"
-    badge_fail_bg = "#7F1D1D"
-    badge_fail_text = "#FCA5A5"
-    badge_fail_border = "#DC2626"
-    plotly_theme = "plotly_dark"
-else:
-    body_bg = "#F8FAFC"
-    card_bg = "#FFFFFF"
-    border_col = "#E2E8F0"
-    text_primary = "#0F172A"
-    text_secondary = "#475569"
-    caption_col = "#64748B"
-    badge_pass_bg = "#DEF7EC"
-    badge_pass_text = "#03543F"
-    badge_pass_border = "#BCF0DA"
-    badge_fail_bg = "#FDE8E8"
-    badge_fail_text = "#9B1C1C"
-    badge_fail_border = "#FBD5D5"
-    plotly_theme = "plotly_white"
-
-# 4. Surgical CSS: Razor-Sharp Contrast + Blocked GitHub/Fork
-st.markdown(f"""
+# 2. Native Adaptive CSS (Allows 3-Dots Theme Switcher to Work 100% Natively)
+st.markdown("""
 <style>
     /* 1. Block GitHub links, Fork badges, and Deploy buttons ONLY */
-    .stDeployButton {{display: none !important;}}
-    [data-testid="stAppDeployButton"] {{display: none !important;}}
-    div[class*="viewerBadge"] {{display: none !important;}}
-    div[class*="ProfileBadge"] {{display: none !important;}}
-    a[href*="github.com"] {{display: none !important;}}
-    footer {{display: none !important;}}
+    .stDeployButton {display: none !important;}
+    [data-testid="stAppDeployButton"] {display: none !important;}
+    div[class*="viewerBadge"] {display: none !important;}
+    div[class*="ProfileBadge"] {display: none !important;}
+    a[href*="github.com"] {display: none !important;}
+    footer {display: none !important;}
 
-    /* 2. Global Base & Text Visibility */
-    .stApp {{
-        background-color: {body_bg} !important;
-        color: {text_primary} !important;
-    }}
-    
-    /* Ensure all headers, markdown, and labels use high-contrast text */
-    h1, h2, h3, h4, h5, h6 {{
-        color: {text_primary} !important;
-        font-weight: 600 !important;
-    }}
-    p, span, label {{
-        color: {text_secondary} !important;
-    }}
-    .stCaption, [data-testid="stCaptionContainer"] p {{
-        color: {caption_col} !important;
-    }}
-    
-    /* Slider Widget Labels */
-    div[data-testid="stWidgetLabel"] label,
-    div[data-testid="stWidgetLabel"] p {{
-        color: {text_primary} !important;
-        font-size: 0.92rem !important;
-        font-weight: 500 !important;
-    }}
+    /* 2. Top spacing */
+    .block-container {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+    }
 
-    /* Tabs Styling */
-    [data-baseweb="tab"] {{
-        color: {text_secondary} !important;
-        font-weight: 500 !important;
-    }}
-    [data-baseweb="tab"][aria-selected="true"] {{
-        color: {text_primary} !important;
-        font-weight: 700 !important;
-    }}
-
-    /* 3. High-Contrast Minimalist Cards */
-    .clean-card {{
-        background-color: {card_bg};
-        border: 1px solid {border_col};
+    /* 3. Cards that natively adapt to Streamlit's Light & Dark themes */
+    .clean-card {
+        background-color: var(--secondary-background-color);
+        border: 1px solid rgba(128, 128, 128, 0.25);
         border-radius: 8px;
         padding: 18px 20px;
         margin-bottom: 12px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }}
-    .card-label {{
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+    
+    .card-label {
         font-size: 0.82rem;
         font-weight: 600;
-        color: {text_secondary};
+        opacity: 0.8;
         text-transform: uppercase;
         letter-spacing: 0.05em;
-        margin-bottom: 6px;
-    }}
-    .card-value {{
+        margin-bottom: 4px;
+        color: var(--text-color);
+    }
+    
+    .card-value {
         font-size: 1.85rem;
         font-weight: 700;
-        color: {text_primary};
-    }}
-    .card-hint {{
+        color: var(--text-color);
+    }
+    
+    .card-hint {
         font-size: 0.8rem;
-        color: {caption_col};
+        opacity: 0.65;
         margin-top: 4px;
-    }}
+        color: var(--text-color);
+    }
 
-    /* 4. High-Contrast Compliance Badges */
-    .badge-pass {{
+    /* 4. Adaptive Compliance Badges */
+    .badge-pass {
         display: inline-block;
-        background-color: {badge_pass_bg};
-        color: {badge_pass_text};
-        border: 1px solid {badge_pass_border};
+        background-color: rgba(16, 185, 129, 0.2);
+        color: #10B981;
+        border: 1px solid rgba(16, 185, 129, 0.4);
         border-radius: 4px;
         padding: 4px 10px;
         font-size: 0.8rem;
         font-weight: 600;
         margin-top: 8px;
-    }}
-    .badge-fail {{
+    }
+    
+    .badge-fail {
         display: inline-block;
-        background-color: {badge_fail_bg};
-        color: {badge_fail_text};
-        border: 1px solid {badge_fail_border};
+        background-color: rgba(239, 68, 68, 0.2);
+        color: #EF4444;
+        border: 1px solid rgba(239, 68, 68, 0.4);
         border-radius: 4px;
         padding: 4px 10px;
         font-size: 0.8rem;
         font-weight: 600;
         margin-top: 8px;
-    }}
+    }
 
-    /* 5. Alert Boxes (st.info) */
-    div[data-testid="stAlert"] {{
-        background-color: {card_bg} !important;
-        border: 1px solid {border_col} !important;
-        color: {text_primary} !important;
-    }}
-    div[data-testid="stAlert"] p {{
-        color: {text_primary} !important;
-    }}
-
-    /* 6. Download Button: Force black text on white button background */
-    .stDownloadButton button,
-    .stDownloadButton button p,
-    .stDownloadButton button span {{
-        color: #000000 !important;
+    /* 5. Force Download Button text to stay readable */
+    .stDownloadButton button {
         font-weight: 600 !important;
-    }}
+    }
 </style>
 """, unsafe_allow_html=True)
 
-# 5. Load Trained Model
+# 3. Load Trained Model
 @st.cache_resource
 def load_assets():
     model = tf.keras.models.load_model('models/ann_model.keras')
@@ -219,7 +136,10 @@ with st.sidebar:
     with st.expander("Install on Phone / Laptop"):
         st.caption("• **Android / PC:** Browser Menu > 'Install App'\n• **iPhone:** Share Button > 'Add to Home Screen'")
 
-# --- MAIN PAGE TABS ---
+# --- MAIN PAGE HEADER ---
+st.title("Biopolymer Packaging Optimization")
+st.caption("Decision-support system for high-strength biodegradable agricultural-waste cement packaging.")
+
 tabs = st.tabs(["Formulation Simulator", "Optimal Recipes (Pareto)", "Model Performance"])
 
 # ==========================================
@@ -335,11 +255,15 @@ with tabs[1]:
                     "Cost_per_kg_USD": "Material Cost ($/kg)",
                     "Tensile_Strength_MPa": "Tensile Strength (MPa)",
                     "Water_Absorption_%": "Water Absorption (%)"
-                },
-                template=plotly_theme
+                }
             )
             fig.add_hline(y=25.0, line_dash="dash", line_color="#10B981", annotation_text="Standard Benchmark (25.0 MPa)")
-            fig.update_layout(margin=dict(l=10, r=10, t=25, b=10), height=390)
+            fig.update_layout(
+                plot_bgcolor="rgba(0,0,0,0)",
+                paper_bgcolor="rgba(0,0,0,0)",
+                margin=dict(l=10, r=10, t=25, b=10),
+                height=390
+            )
             st.plotly_chart(fig, width="stretch")
 
         st.markdown("#### Top Recommended Formulations")
